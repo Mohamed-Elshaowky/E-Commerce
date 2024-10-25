@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "default": "e-commerce-3cc06",
+    "production": "e-commerce-2004e"
+  },
+  "targets": {},
+  "etags": {}
+}

@@ -1,6 +1,5 @@
 .cart {
   padding: 30px;
-  flex-direction: row;
 }
 
 .cart-title {
@@ -14,10 +13,9 @@
 .cart-wrapper {
   display: flex;
   align-items: flex-start;
-  flex-direction: column;
 }
 .cart-items {
-  width: 90%;
+  width: 70%;
 }
 .cart-item {
   display: flex;
@@ -26,16 +24,15 @@
   position: relative;
   margin-bottom: 21px;
   border-bottom: 2px solid gray;
-  flex-direction: column;
 }
 .cart-item-img {
-  width: 100px;
-  height: 100px;
+  width: 140px;
+  height: 180px;
   object-fit: contain;
 }
 .cart-item-info {
   padding: 10px;
-  width: calc(100% - 100px);
+  width: calc(100% - 140px);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -89,12 +86,12 @@
   position: absolute;
   bottom: 5px;
   right: 5px;
-  font-size: 34px;
+  font-size: 24px;
   cursor: pointer;
   color: crimson;
 }
 .cart-order-summary {
-  width: 90%;
+  width: 30%;
   border: 1px solid gray;
   margin: 0 10px;
 }
@@ -111,34 +108,43 @@
   font-size: 21px;
 }
 /* Media Queries */
-.cart-items,
-.cart-order-summary {
-  width: 90%;
+@media (max-width: 992px) {
+  .cart-wrapper {
+    flex-direction: column;
+  }
+  .cart-items,
+  .cart-order-summary {
+    width: 100%;
+  }
 }
-.cart-item-book-author,
-.cart-item-book-title {
-  font-size: 20px;
+@media (max-width: 768px) {
+  .cart-item-book-author,
+  .cart-item-book-title {
+    font-size: 20px;
+  }
+  .cart-item-quantity,
+  .cart-item-price,
+  .bi-trash-fill {
+    font-size: 18px;
+  }
 }
-.cart-item-quantity,
-.cart-item-price,
-.bi-trash-fill {
-  font-size: 18px;
-}
-.cart {
-  padding: 10px;
-}
-.cart-wrapper {
-  align-items: center;
-  justify-content: center;
-}
-.cart-item {
-  flex-direction: column;
-  align-items: center;
-}
-.cart-item-info {
-  width: 100%;
-  margin-top: 15px;
-  flex-direction: column;
+@media (max-width: 568px) {
+  .cart {
+    padding: 10px;
+  }
+  .cart-wrapper {
+    align-items: center;
+    justify-content: center;
+  }
+  .cart-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .cart-item-info {
+    width: 100%;
+    margin-top: 15px;
+    flex-direction: column;
+  }
 }
 .cart-empty {
   text-align: center;
@@ -151,8 +157,8 @@
   font-size: 20px;
   cursor: pointer;
   width: 170px;
-  background-color: var(--primary-color);
-  color: var(--main-color);
+  background-color: #1976d2;
+  color: #efefef;
   border-radius: 10px;
   margin: 10px;
   padding: 5px 10px;

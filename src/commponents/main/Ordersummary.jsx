@@ -23,6 +23,6 @@ const Ordersummary = ({ totalprice }) => {
   );
 };
 Ordersummary.propTypes = {
-  totalprice: PropTypes.func.isRequired, // تحديد أن toggleDrawerCart هو دالة ومطلوب
+  totalprice: PropTypes.string.isRequired, // تحديد أن toggleDrawerCart هو دالة ومطلوب
 };
 export default Ordersummary;

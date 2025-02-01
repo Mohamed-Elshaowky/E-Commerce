@@ -27,6 +27,7 @@ export default function Header1() {
           <Typography className="msg" variant="body2">
             Free Express Shoping
           </Typography>
+          <Typography>Test</Typography>
         </Stack>
         <Stack className="icons" direction={"row"}>
           <div>

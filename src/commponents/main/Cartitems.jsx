@@ -2,6 +2,7 @@ import PropTypes from "prop-types"; // استيراد PropTypes
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import DeleteIcon from "@mui/icons-material/Delete";
+import "./CartCss.css";
 const Cartitem = ({ cartItems, removeFromcart, addTocart }) => {
   // Cart Functions
   return (
@@ -11,7 +12,7 @@ const Cartitem = ({ cartItems, removeFromcart, addTocart }) => {
           <div key={item.id} className="cart-item">
             <img
               className="cart-item-img"
-              src={`${item.img[0]}`}
+              src={`${item.image}`}
               alt={item.title}
             ></img>
             <div className="cart-item-info">
@@ -23,12 +24,7 @@ const Cartitem = ({ cartItems, removeFromcart, addTocart }) => {
                 <div className="cart-item-quantity">
                   <button
                     className=""
-                    onClick={() =>
-                      addTocart({
-                        ...item,
-                        quantity: parseInt(item.quantity) + 1,
-                      })
-                    }
+                    onClick={() => addTocart(item, "increase")}
                   >
                     <AddIcon />
                   </button>
@@ -36,12 +32,7 @@ const Cartitem = ({ cartItems, removeFromcart, addTocart }) => {
                   <button
                     className=""
                     disabled={item.quantity <= 1}
-                    onClick={() =>
-                      addTocart({
-                        ...item,
-                        quantity: parseInt(item.quantity) - 1,
-                      })
-                    }
+                    onClick={() => addTocart(item, "decrease")}
                   >
                     <RemoveIcon />
                   </button>
@@ -63,13 +54,14 @@ const Cartitem = ({ cartItems, removeFromcart, addTocart }) => {
       ) : (
         <div className="cart-empty">
           <h2>Your Cart is Empty</h2>
+          <a href="/">Shopping Now</a>
         </div>
       )}
     </div>
   );
 };
 Cartitem.propTypes = {
-  cartItems: PropTypes.func.isRequired, // تحديد أن toggleDrawerCart هو دالة ومطلوب
+  cartItems: PropTypes.array.isRequired, // تحديد أن toggleDrawerCart هو دالة ومطلوب
   removeFromcart: PropTypes.func.isRequired, // تحديد أن toggleDrawerCart هو دالة ومطلوب
   addTocart: PropTypes.func.isRequired, // تحديد أن toggleDrawerCart هو دالة ومطلوب
 };

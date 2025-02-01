@@ -4,15 +4,26 @@ import PropTypes from "prop-types"; // استيراد PropTypes
 const Providercart = ({ children }) => {
   const [cartItems, setCartITems] = useState([]);
   // Add To Cart
-  const addTocart = (item) => {
-    const isExist = cartItems.find((cart) => cart.id === item.id);
-    if (isExist) {
-      setCartITems(
-        cartItems.map((cartItem) => (cartItem.id === item.id ? item : cartItem))
-      );
-    } else {
-      setCartITems((prev) => [...prev, item]);
-    }
+  const addTocart = (item, action = "increase") => {
+    setCartITems((prevCart) => {
+      const isExist = prevCart.find((cart) => cart.id === item.id);
+
+      if (isExist) {
+        return prevCart.map((cartItem) =>
+          cartItem.id === item.id
+            ? {
+                ...cartItem,
+                quantity:
+                  action === "increase"
+                    ? cartItem.quantity + 1
+                    : Math.max(cartItem.quantity - 1, 1),
+              }
+            : cartItem
+        );
+      } else {
+        return [...prevCart, { ...item, quantity: 1 }];
+      }
+    });
   };
   // Remove from cart
   const removeFromcart = (id) => {
@@ -33,6 +44,6 @@ const Providercart = ({ children }) => {
   );
 };
 Providercart.propTypes = {
-  children: PropTypes.func, // تحديد أن toggleDrawerCart هو دالة ومطلوب
+  children: PropTypes.node, // تحديد أن toggleDrawerCart هو دالة ومطلوب
 };
 export default Providercart;

@@ -3,6 +3,7 @@ import "./CartCss.css";
 import Ordersummary from "./Ordersummary";
 import Cartitems from "./Cartitems";
 import cartContext from "../../context/CartContext";
+import { Box } from "@mui/material";
 
 const Cart = () => {
   // Cart Data
@@ -12,17 +13,17 @@ const Cart = () => {
     .reduce((acc, cur) => acc + cur.price * cur.quantity, 0)
     .toFixed(2);
   return (
-    <div className="cart">
-      <div className="cart-title">Your Shopping Cart</div>
-      <div className="cart-wrapper">
+    <Box className="cart">
+      <Box className="cart-title">Your Shopping Cart</Box>
+      <Box className="cart-wrapper">
         <Cartitems
           cartItems={cartItems}
           addTocart={addTocart}
           removeFromcart={removeFromcart}
         />
         <Ordersummary totalprice={totalprice} />
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

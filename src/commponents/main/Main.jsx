@@ -150,7 +150,7 @@ const Main = ({ Myproducts = [], SearchValue }) => {
                 key={product.id}
                 sx={{
                   width: 333,
-                  height: 500,
+                  height: 450,
                   cursor: "pointer",
                   ":hover .MuiCardMedia-root": {
                     scale: "1.1",
@@ -167,37 +167,19 @@ const Main = ({ Myproducts = [], SearchValue }) => {
                 />
                 <CardContent
                   sx={{
-                    height: 175,
+                    height: 120,
                     overflow: "hidden",
                   }}
                 >
-                  <Stack
-                    sx={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      overflow: "hidden",
-                    }}
-                  >
-                    <Typography gutterBottom variant="h6" component="div">
-                      {product.title}
-                    </Typography>
-                    <Typography
-                      variant="subtitle"
-                      component="p"
-                      sx={{ color: "#9797e5" }}
-                    >
-                      ${product.price}
-                    </Typography>
-                  </Stack>
+                  <Typography gutterBottom variant="h6" component="div">
+                    {product.title}
+                  </Typography>
                   <Typography
-                    variant="body2"
-                    sx={{
-                      color: "text.secondary",
-                    }}
+                    variant="subtitle"
+                    component="p"
+                    sx={{ color: "#9797e5" }}
                   >
-                    {product.description.split(" ").slice(0, 15).join(" ") +
-                      "..."}
+                    ${product.price}
                   </Typography>
                 </CardContent>
                 <CardActions sx={{ justifyContent: "space-between" }}>

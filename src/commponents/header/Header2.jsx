@@ -3,22 +3,12 @@ import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import Badge from "@mui/material/Badge";
 import { styled } from "@mui/material/styles";
-import {
-  Container,
-  IconButton,
-  List,
-  ListItem,
-  ListItemText,
-  Menu,
-  MenuItem,
-  Typography,
-} from "@mui/material";
+import { Container, IconButton, Typography } from "@mui/material";
 import "./Header.css";
-import { useContext, useState } from "react";
-import { ExpandMore } from "@mui/icons-material";
-import { useTheme } from "@emotion/react";
+import { useContext } from "react";
 import PropTypes from "prop-types"; // استيراد PropTypes
 import cartContext from "../../context/CartContext";
+import { useNavigate } from "react-router-dom";
 // Badge
 const StyledBadge = styled(Badge)(({ theme }) => ({
   "& .MuiBadge-badge": {
@@ -28,102 +18,54 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
     padding: "0 4px",
   },
 }));
-// Menu options
-const options = ["All Categories ", "Car", "Clothes", "Electronics"];
 
-const Header2 = ({ toggleDrawerCart }) => {
-  // Menu function
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const open = Boolean(anchorEl);
-  const handleClickListItem = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuItemClick = (event, index) => {
-    setSelectedIndex(index);
-    setAnchorEl(null);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-  // theme
-  const theme = useTheme();
+const Header2 = ({ toggleDrawerCart, SearchValue, setSearchValue }) => {
   // cartlenght
   const { cartItemsLength } = useContext(cartContext);
+
+  // to go to anther page
+
+  const navigate = useNavigate();
   return (
     <Container className="header2">
-      <Typography className="logo">
+      <Typography
+        className="logo"
+        onClick={() => {
+          toggleDrawerCart(true);
+          navigate("/");
+        }}
+      >
         <ShoppingCartOutlinedIcon />
         E-commerce
       </Typography>
       <div className="search">
         <SearchIcon sx={{ color: "#777" }} />
-        <input placeholder="Search..." className="searchinput"></input>
-        <div className="menu">
-          <List
-            component="nav"
-            aria-label="Device settings"
-            sx={{
-              padding: "0px",
-              borderRadius: "10px",
-              bgcolor: theme.palette.mycolor.main,
-            }}
-          >
-            <ListItem
-              id="lock-button"
-              aria-haspopup="listbox"
-              aria-controls="lock-menu"
-              aria-expanded={open ? "true" : undefined}
-              onClick={handleClickListItem}
-              sx={{ "&:hover": { cursor: "pointer" } }}
-            >
-              <ListItemText
-                secondary={options[selectedIndex]}
-                sx={{
-                  width: "100px",
-                  textAlign: "center",
-                  "&:hover": { cursor: "pointer" },
-                }}
-              />
-              <ExpandMore />
-            </ListItem>
-          </List>
-          <Menu
-            id="lock-menu"
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleClose}
-            MenuListProps={{
-              "aria-labelledby": "lock-button",
-              role: "listbox",
-            }}
-          >
-            {options.map((option, index) => (
-              <MenuItem
-                sx={{ fontSize: "14px" }}
-                key={option}
-                selected={index === selectedIndex}
-                onClick={(event) => handleMenuItemClick(event, index)}
-              >
-                {option}
-              </MenuItem>
-            ))}
-          </Menu>
-        </div>
+        <input
+          placeholder="Search..."
+          className="searchinput"
+          value={SearchValue}
+          onChange={(e) => setSearchValue(e.target.value)}
+        ></input>
       </div>
       <Typography>
         <IconButton
           aria-label="cart"
           to="/cart"
-          onClick={toggleDrawerCart(true)}
+          onClick={() => {
+            toggleDrawerCart(true);
+            navigate("/cart");
+          }}
         >
           <StyledBadge badgeContent={cartItemsLength} color="primary">
-            <ShoppingCartOutlinedIcon onClick={() => toggleDrawerCart(true)} />
+            <ShoppingCartOutlinedIcon />
           </StyledBadge>
         </IconButton>
-        <IconButton>
+        <IconButton
+          onClick={() => {
+            toggleDrawerCart(true);
+            navigate("/logform");
+          }}
+        >
           <PersonOutlineOutlinedIcon />
         </IconButton>
       </Typography>
@@ -132,5 +74,7 @@ const Header2 = ({ toggleDrawerCart }) => {
 };
 Header2.propTypes = {
   toggleDrawerCart: PropTypes.func.isRequired, // تحديد أن toggleDrawerCart هو دالة ومطلوب
+  SearchValue: PropTypes.string.isRequired,
+  setSearchValue: PropTypes.func.isRequired,
 };
 export default Header2;

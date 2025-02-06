@@ -1,4 +1,4 @@
-import { AddShoppingCartOutlined, Close } from "@mui/icons-material";
+import { AddShoppingCartOutlined } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -7,65 +7,48 @@ import {
   CardContent,
   CardMedia,
   Container,
-  Drawer,
-  IconButton,
-  Modal,
-  Paper,
   Rating,
   Stack,
   ToggleButton,
   ToggleButtonGroup,
   Typography,
 } from "@mui/material";
-import { useContext, useState } from "react";
-import { Myproducts } from "./Prodects";
+import { useContext, useEffect, useState } from "react";
+// import { Myproducts } from "./Datafetching";
 import PropTypes from "prop-types"; // استيراد PropTypes
-
-// Cart imports
-import "./CartCss.css";
-import Ordersummary from "./Ordersummary";
-import Cartitems from "./Cartitems";
 import cartContext from "../../context/CartContext";
-const Main = ({ toggleDrawerCart, openCart }) => {
+import { useNavigate } from "react-router-dom";
+// Cart imports
+const Main = ({ Myproducts = [], SearchValue }) => {
   const [alignment, setAlignment] = useState("all");
 
-  const handleAlignment = (event, aligment) => {
+  const handleAlignment = (even, alignment) => {
     if (alignment !== null) {
       setAlignment(alignment);
     }
-    setAlignment(aligment);
-  };
-  // Handle modal
-  const [selectedProduct, setSelectedProduct] = useState(null); // حالة لتخزين المنتج المحدد
-  const [open, setOpen] = useState(false);
-  const handleOpen = (product) => {
-    setSelectedProduct(product); // تخزين المنتج الذي تم اختياره
-    setOpen(true); // فتح الـ Modal
-  };
-  const handleClose = () => {
-    setOpen(false); // إغلاق الـ Modal
-    setSelectedProduct(null); // تفريغ المنتج المحدد
   };
   // products filter
-  const [products, setProducts] = useState(Myproducts);
-
+  // قبل جلب البيانات من api خارجي
+  const [products, setProducts] = useState([]);
+  useEffect(() => {
+    if (Myproducts && Array.isArray(Myproducts)) {
+      setProducts(Myproducts);
+    }
+  }, [Myproducts]);
   const filterClick = (buttoncategory) => {
-    const productsArr = Myproducts.filter((product) => {
-      const cat = product.category.filter((mycat) => {
-        return mycat === buttoncategory;
-      });
-      return cat[0] === buttoncategory;
-    });
-    setProducts(productsArr);
+    if (buttoncategory == "all") {
+      setProducts(Myproducts);
+    } else {
+      const productsArr = Myproducts.filter(
+        (product) => product.category === buttoncategory
+      );
+      setProducts(productsArr);
+    }
   };
-  // select img
-  const [selectedImg, setselectedImg] = useState(0);
   // Cart Data
-  const { cartItems, addTocart, removeFromcart } = useContext(cartContext);
-
-  const totalprice = cartItems
-    .reduce((acc, cur) => acc + cur.price * cur.quantity, 0)
-    .toFixed(2);
+  const { addTocart } = useContext(cartContext);
+  //  to go ProductDetails
+  const navigate = useNavigate();
   return (
     <Container sx={{ paddingBottom: "10px" }}>
       <Stack
@@ -90,34 +73,59 @@ const Main = ({ toggleDrawerCart, openCart }) => {
               color: "#e94560",
               bgcolor: "initial",
             },
+            ".MuiButtonBase-root": {
+              border: "1px solid #575151",
+            },
+            flexWrap: "wrap",
+            justifyContent: "center",
+            alignItems: "center",
+            textAlign: "center",
           }}
         >
           <ToggleButton
             value="all"
             aria-label="left aligned"
             onClick={() => {
-              setProducts(Myproducts);
+              filterClick("all");
             }}
           >
             All Products
           </ToggleButton>
           <ToggleButton
-            value="men"
+            value="men's clothing"
             aria-label="centered"
             onClick={() => {
-              filterClick("men");
+              filterClick("men's clothing");
             }}
           >
             Men
           </ToggleButton>
           <ToggleButton
-            value="women"
+            value="women's clothing"
             aria-label="right aligned"
             onClick={() => {
-              filterClick("women");
+              filterClick("women's clothing");
             }}
           >
             Women
+          </ToggleButton>
+          <ToggleButton
+            value="jewelery"
+            aria-label="right aligned"
+            onClick={() => {
+              filterClick("jewelery");
+            }}
+          >
+            jewelery
+          </ToggleButton>
+          <ToggleButton
+            value="electronics"
+            aria-label="right aligned"
+            onClick={() => {
+              filterClick("electronics");
+            }}
+          >
+            electronics
           </ToggleButton>
         </ToggleButtonGroup>
       </Stack>
@@ -130,271 +138,89 @@ const Main = ({ toggleDrawerCart, openCart }) => {
           justifyContent: "center",
         }}
       >
-        {products.map((product) => {
-          return (
-            <Card
-              key={product.id}
-              sx={{
-                maxWidth: 333,
-                ":hover .MuiCardMedia-root": {
-                  scale: "1.1",
-                  transition: ".35s",
-                  rotate: "1.5deg",
-                },
-              }}
-            >
-              <CardMedia
-                sx={{ height: 277 }}
-                image={product.img[0]}
-                title="green iguana"
-              />
-              <CardContent>
-                <Stack
+        {products
+          ?.filter((product) =>
+            (product?.title || "")
+              .toLocaleLowerCase()
+              .includes((SearchValue || "").toLocaleLowerCase())
+          )
+          .map((product) => {
+            return (
+              <Card
+                key={product.id}
+                sx={{
+                  width: 333,
+                  height: 450,
+                  cursor: "pointer",
+                  ":hover .MuiCardMedia-root": {
+                    scale: "1.1",
+                    transition: ".35s",
+                    rotate: "1.5deg",
+                  },
+                }}
+                onClick={() => navigate(`/product/${product.id}`)}
+              >
+                <CardMedia
+                  sx={{ height: 277 }}
+                  image={product.image}
+                  title="green iguana"
+                />
+                <CardContent
                   sx={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
+                    height: 120,
+                    overflow: "hidden",
                   }}
                 >
                   <Typography gutterBottom variant="h6" component="div">
                     {product.title}
                   </Typography>
-                  <Typography variant="subtitle" component="p">
+                  <Typography
+                    variant="subtitle"
+                    component="p"
+                    sx={{ color: "#9797e5" }}
+                  >
                     ${product.price}
                   </Typography>
-                </Stack>
-                <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                  {product.description}
-                </Typography>
-              </CardContent>
-              <CardActions sx={{ justifyContent: "space-between" }}>
-                <Button
-                  onClick={() => handleOpen(product)}
-                  sx={{ textTransform: "capitalize" }}
-                  size="larg"
-                >
-                  <AddShoppingCartOutlined fontSize="small" sx={{ mr: 1 }} />
-                  Add to Cart
-                </Button>
-                {selectedProduct && (
-                  <Modal
-                    open={open}
-                    onClose={handleClose}
-                    aria-labelledby="modal-modal-title"
-                    aria-describedby="modal-modal-description"
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
+                </CardContent>
+                <CardActions sx={{ justifyContent: "space-between" }}>
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      addTocart(product, "increase");
                     }}
+                    sx={{ textTransform: "capitalize" }}
+                    size="larg"
                   >
-                    <Paper
-                      sx={{
-                        ".MuiStack-root": {
-                          maxWidth: {
-                            sm: "90%",
-                            md: 800,
-                          },
-                        },
-                        position: "relative",
-                      }}
-                    >
-                      <IconButton
-                        sx={{
-                          position: "absolute",
-                          top: "5px",
-                          right: "5px",
-                          transition: ".3s",
-                          color: "#d67a4c",
-                          ":hover": { rotate: "180deg", color: "red" },
-                        }}
-                        className="closeDrawer"
-                        onClick={handleClose}
-                      >
-                        <Close />
-                      </IconButton>
-                      <Stack
-                        sx={{
-                          display: "flex",
-                          flexDirection: { xs: "column", sm: "row" },
-                          gap: 2.5,
-                        }}
-                      >
-                        <Box
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                          }}
-                        >
-                          <img
-                            width={300}
-                            height={"100%"}
-                            alt=""
-                            src={selectedProduct.img[selectedImg]}
-                          ></img>
-                        </Box>
-                        <Box
-                          sx={{
-                            textAlign: { xs: "center", sm: "left" },
-                            margin: " 30px 0",
-                            padding: "0 5px",
-                          }}
-                        >
-                          <Typography variant="h5">
-                            {selectedProduct.title}
-                          </Typography>
-                          <Typography
-                            variant="h5"
-                            sx={{
-                              color: "crimson",
-                              fontSize: "22px",
-                              margin: ".4 0",
-                            }}
-                          >
-                            ${selectedProduct.price}
-                          </Typography>
-                          <Typography
-                            variant="body2"
-                            sx={{ color: "text.secondary" }}
-                          >
-                            {selectedProduct.description}
-                          </Typography>
-                          <Stack
-                            direction={"row"}
-                            sx={{
-                              gap: 1,
-                              my: 1.5,
-                              justifyContent: { xs: "center", sm: "left" },
-                            }}
-                          >
-                            <ToggleButtonGroup
-                              value={selectedImg}
-                              exclusive
-                              onChange={handleAlignment}
-                              sx={{
-                                ".Mui-selected": {
-                                  bgcolor: "initial",
-                                  opacity: "1",
-                                },
-                              }}
-                            >
-                              {selectedProduct.img.map((image, index) => (
-                                <ToggleButton
-                                  value={index}
-                                  aria-label="left aligned"
-                                  key={index}
-                                  sx={{
-                                    p: 0,
-                                    mx: 1,
-                                    opacity: "0.5",
-                                    border: "none",
-                                    width: "110px",
-                                    height: "110px",
-                                  }}
-                                >
-                                  <img
-                                    onClick={() => setselectedImg(index)}
-                                    width={"100%"}
-                                    height={"100%"}
-                                    src={image}
-                                    style={{
-                                      borderRadius: 3,
-                                      cursor: "pointer",
-                                    }}
-                                    alt=""
-                                  />
-                                </ToggleButton>
-                              ))}
-                            </ToggleButtonGroup>
-                          </Stack>
-                          <Button
-                            sx={{ textTransform: "capitalize" }}
-                            variant="contained"
-                            onClick={() =>
-                              addTocart({ ...selectedProduct, quantity: +1 })
-                            }
-                          >
-                            <AddShoppingCartOutlined
-                              fontSize="small"
-                              sx={{ mr: 1 }}
-                            />
-                            Buy Now
-                          </Button>
-                        </Box>
-                      </Stack>
-                    </Paper>
-                  </Modal>
-                )}
-                <Rating
-                  precision={0.1}
-                  name="read-only"
-                  value={product.rating}
-                  readOnly
-                />
-              </CardActions>
-            </Card>
-          );
-        })}
+                    <AddShoppingCartOutlined fontSize="small" sx={{ mr: 1 }} />
+                    Add to Cart
+                  </Button>
+                  <Rating
+                    precision={0.1}
+                    name="read-only"
+                    value={product.rating?.rate || 0}
+                    readOnly
+                  />
+                </CardActions>
+              </Card>
+            );
+          })}
       </Stack>
-      <Drawer
-        sx={{
-          " .MuiPaper-root": {
-            height: "100%",
-          },
-          " .css-wm6t5u ": {
-            width: "100%",
-            minWidth: "250px",
-            maxWidth: "500px",
-          },
-        }}
-        anchor={"right"}
-        open={openCart}
-        onClose={toggleDrawerCart(false)}
-      >
-        {
-          <Box
-            sx={{
-              width: "400px",
-              mx: "auto",
-              mt: "10px",
-              position: "relative",
-              borderRadius: "1rem",
-            }}
-            className="drawer"
-          >
-            <IconButton
-              sx={{
-                position: "absolute",
-                top: "7px",
-                right: "10px",
-                transition: ".3s",
-                ":hover": { rotate: "180deg", color: "red" },
-              }}
-              className="closeDrawer"
-              onClick={toggleDrawerCart(false)}
-            >
-              <Close />
-            </IconButton>
-            <Box className="cart">
-              <Typography className="cart-title">Your Shopping Cart</Typography>
-              <Box className="cart-wrapper">
-                <Cartitems
-                  cartItems={cartItems}
-                  addTocart={addTocart}
-                  removeFromcart={removeFromcart}
-                />
-                <Ordersummary totalprice={totalprice} />
-              </Box>
-            </Box>
-          </Box>
-        }
-      </Drawer>
     </Container>
   );
 };
 Main.propTypes = {
   toggleDrawerCart: PropTypes.func.isRequired,
-  openCart: PropTypes.func.isRequired, // تحديد أن toggleDrawerCart هو دالة ومطلوب
+  openCart: PropTypes.bool.isRequired, // تحديد أن toggleDrawerCart هو دالة ومطلوب
+  Myproducts: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      title: PropTypes.string.isRequired,
+      price: PropTypes.number.isRequired,
+      description: PropTypes.string.isRequired,
+      image: PropTypes.string.isRequired, // تأكد من أن "image" هو مصفوفة من السلاسل النصية
+      rating: PropTypes.object.isRequired, // إضافة التقييم للمواصفات
+    })
+  ).isRequired, // تأكيد أن Myproducts هو مصفوفة تحتوي على كائنات بالخصائص
+  SearchValue: PropTypes.string.isRequired,
 };
 export default Main;
